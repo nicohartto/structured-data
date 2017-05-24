@@ -19,21 +19,19 @@
 (defn rectangle [bottom-left top-right]
   [bottom-left top-right])
 
-(defn width [[x1 y1] [x2 y2]]
+(defn width [[[x1 y1] [x2 y2]]]
   (- x2 x1))
 
-(defn height [[x1 y1] [x2 y2]]
+(defn height [[[x1 y1] [x2 y2]]]
   (- y2 y1))
 
 (defn square? [rectangle]
-  (let [[[x1 y1] [x2 y2]] rectangle]
-    (if (= (width [x1 y1] [x2 y2]) (height [x1 y1] [x2 y2]))
-      true
-      false)))
+  (if (= (width rectangle) (height rectangle))
+    true
+    false))
 
 (defn area [rectangle]
-  (let [[[x1 y1] [x2 y2]] rectangle]
-    (* (width [x1 y1] [x2 y2]) (height [x1 y1] [x2 y2]))))
+  (* (width rectangle) (height rectangle)))
 
 
 (defn contains-point? [rectangle point]
@@ -144,12 +142,20 @@
     (first (filter correct-name? authors))))
 
 (defn living-authors [authors]
-  :-)
+  (let [is-alive?
+        (fn [author] (alive? author))]
+    (filter is-alive? authors)))
+
 
 (defn has-a-living-author? [book]
-  :-)
+  (let [living-authors-for-book
+        (fn [book]
+          (living-authors (:authors book)))]
+       (if (empty? (living-authors-for-book book))
+         false
+         true)))
 
 (defn books-by-living-authors [books]
-  :-)
+  (filter has-a-living-author? books))
 
 ; %________%
