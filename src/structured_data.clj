@@ -79,46 +79,69 @@
   (map :title books))
 
 (defn monotonic? [a-seq]
-  :-)
+  (if (or (apply <= a-seq) (apply >= a-seq))
+    true
+    false))
 
 (defn stars [n]
-  :-)
+  (apply str (repeat n "*")))
 
 (defn toggle [a-set elem]
-  :-)
+  (if (contains? a-set elem)
+    (disj a-set elem)
+    (conj a-set elem)))
 
 (defn contains-duplicates? [a-seq]
-  :-)
+  (if (= (count (set a-seq)) (count a-seq))
+    false
+    true))
 
 (defn old-book->new-book [book]
-  :-)
+  (assoc book :authors (set (:authors book))))
 
 (defn has-author? [book author]
-  :-)
+  (contains? (:authors book) author))
 
 (defn authors [books]
-  :-)
+  (let [author-names
+        (fn [book]
+          (set (:authors book)))]
+    (apply clojure.set/union (map author-names books))))
 
 (defn all-author-names [books]
-  :-)
+  (set (map :name (authors books))))
 
 (defn author->string [author]
-  :-)
+  (let [years
+        (fn [author] (if (:birth-year author) (str " (" (:birth-year author) " - " (:death-year author) ")") ""))]
+    (str (:name author) (years author))))
 
 (defn authors->string [authors]
-  :-)
+  (apply str (interpose ", " (map author->string authors))))
 
 (defn book->string [book]
-  :-)
+  (str (:title book) ", written by " (authors->string (:authors book))))
 
 (defn books->string [books]
-  :-)
+  (let [book-count->string
+        (fn [books]
+          (cond
+            (= (count books) 0) "No books."
+            (= (count books) 1) "1 book."
+            (> (count books) 1) (str (count books) " books.")))
+        book-strings (map book->string books)]
+
+    (if (>= (count books) 1)
+      (str (book-count->string books) (str " " (apply str (interpose ". " book-strings)) "."))
+      (book-count->string books))))
 
 (defn books-by-author [author books]
-  :-)
+  (filter (fn [book] (has-author? book author)) books))
 
 (defn author-by-name [name authors]
-  :-)
+  (let [correct-name?
+        (fn [author] (= (:name author) name))]
+    (first (filter correct-name? authors))))
 
 (defn living-authors [authors]
   :-)
